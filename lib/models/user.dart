@@ -13,11 +13,12 @@ class UserModel {
     return UserModel(
       userId: json['userId'],
       userName: json['userName'],
-      playerRating: json.containsKey('playerRating') ? json['playerRating'] : null,
+      playerRating:
+          json.containsKey('playerRating') ? json['playerRating'] : null,
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'userId': userId,
       'userName': userName,

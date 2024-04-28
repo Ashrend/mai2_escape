@@ -85,8 +85,13 @@ class Mai2Provider {
       try {
         message = aesDecrypt(Uint8List.fromList(zlib.decode(responseBody)));
         final json = jsonDecode(message);
-        user = UserModel.fromJson(json);
-        success = true;
+        if (json['userId'] == null || json['userName'] == null) {
+          success = false;
+          message = "用户为空，可能未注册";
+        } else {
+          user = UserModel.fromJson(json);
+          success = true;
+        }
       } catch (e) {
         success = false;
         message = utf8.decode(responseBody);

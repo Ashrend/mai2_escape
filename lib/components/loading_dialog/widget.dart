@@ -55,17 +55,12 @@ class LoadingDialog extends GetWidget<LoadingDialogController> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 50,
-                      height: 50,
-                      margin: const EdgeInsets.only(top: 5, bottom: 15),
+                      width: 46,
+                      height: 46,
+                      margin: const EdgeInsets.only(top: 8, bottom: 16),
                       child: const CircularProgressIndicator(),
                     ),
-                    const Text(
-                      "逃离小黑屋中...",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
+                    const Text("逃离小黑屋中..."),
                   ],
                 ),
               ),

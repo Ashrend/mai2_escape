@@ -6,10 +6,13 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'components/loading_dialog/controller.dart';
+import 'providers/storage_provider.dart';
 import 'routes/pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  StorageProvider.init();
   
   // HttpOverrides.global = ProxiedHttpOverrides('127.0.0.1', 8080);
 

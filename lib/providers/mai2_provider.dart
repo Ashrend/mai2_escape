@@ -7,9 +7,11 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 
 import '../common/constants.dart';
 import '../common/response.dart';
+import '../models/user.dart';
 import '../utils/http.dart';
 
 class Mai2Provider {
@@ -41,6 +43,67 @@ class Mai2Provider {
     final iv = IV.fromUtf8(AppConstants.aesIV);
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: 'PKCS7'));
     return encrypter.decrypt(Encrypted(data), iv: iv);
+  }
+
+  static Future<CommonResponse<UserModel?>> getUserPreview({
+    required int userID,
+  }) async {
+    final data = jsonEncode({
+      'userId': userID,
+    });
+    final body = zlib.encode(aesEncrypt(data.toString()));
+
+    maiHeader['User-Agent'] =
+        "${obfuscate('GetUserPreviewApiMaimaiChn')}#$userID";
+    maiHeader['Content-Length'] = body.length.toString();
+
+    try {
+      final client = HttpClient();
+
+      final request = await client.postUrl(
+        Uri.parse(
+            'https://${AppConstants.mai2Host}/Maimai2Servlet/${obfuscate('GetUserPreviewApiMaimaiChn')}'),
+      );
+
+      request.headers.clear();
+      for (final key in maiHeader.keys) {
+        request.headers.add(key, maiHeader[key]!, preserveHeaderCase: true);
+      }
+
+      request.add(body);
+
+      await request.flush();
+
+      final response = await request.close();
+
+      String message = "";
+      bool success = false;
+      UserModel? user;
+
+      final responseBody = await response.toBytes();
+
+      try {
+        message = aesDecrypt(Uint8List.fromList(zlib.decode(responseBody)));
+        final json = jsonDecode(message);
+        user = UserModel.fromJson(json);
+        success = true;
+      } catch (e) {
+        success = false;
+        message = utf8.decode(responseBody);
+      }
+
+      return CommonResponse(
+        success: success,
+        data: user,
+        message: message,
+      );
+    } catch (e) {
+      return CommonResponse(
+        success: false,
+        data: null,
+        message: e.toString(),
+      );
+    }
   }
 
   static Future<CommonResponse<Null>> logout(int userId) async {

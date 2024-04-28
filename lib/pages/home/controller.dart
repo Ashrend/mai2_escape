@@ -5,7 +5,13 @@ import 'package:oktoast/oktoast.dart';
 
 class HomeController extends GetxController {
   DateTime? _lastPressedAt;
-  TextEditingController qrCodeController = TextEditingController();
+  PageController pageController = PageController();
+  RxInt pageIndex = 0.obs;
+
+  void onTabTapped(int index) {
+    pageController.jumpToPage(index);
+    pageIndex.value = index;
+  }
 
   void onBackPressed(BuildContext context) {
     if (_lastPressedAt == null ||

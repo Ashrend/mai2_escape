@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -7,9 +9,28 @@ import 'components/loading_dialog/controller.dart';
 import 'routes/pages.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // HttpOverrides.global = ProxiedHttpOverrides('127.0.0.1', 8080);
+
   Get.create(() => LoadingDialogController());
 
   runApp(const MainApp());
+}
+
+class ProxiedHttpOverrides extends HttpOverrides {
+  final String _host;
+  final int _port;
+
+  ProxiedHttpOverrides(this._host, this._port);
+
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..findProxy = (uri) {
+        return 'PROXY $_host:$_port;';
+      };
+  }
 }
 
 class MainApp extends StatefulWidget {

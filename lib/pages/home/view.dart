@@ -1,103 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mai2_revive/providers/chime_provider.dart';
 
-import '../../common/qr_code.dart';
-import '../../components/loading_dialog/controller.dart';
-import '../../components/loading_dialog/widget.dart';
-import '../../providers/mai2_provider.dart';
+import '../bound_users/view.dart';
+import '../fast_logout/view.dart';
 import 'controller.dart';
+
+class TabPage {
+  final String title;
+  final IconData icon;
+  final Widget page;
+
+  TabPage(this.title, this.icon, this.page);
+}
+
+final List<TabPage> pages = [
+  TabPage('快速逃离', Icons.directions_run, const FastLogoutPage()),
+  TabPage('绑定的用户', Icons.people, const BoundUsersPage()),
+];
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
-
-  void logout(String rawQrCode) async {
-    ChimeQrCode qrCode = ChimeQrCode(rawQrCode);
-
-    Get.dialog(
-      LoadingDialog(
-        task: () async {
-          String message = "";
-
-          if (!qrCode.isValid()) {
-            return TaskResult(
-              success: false,
-              message: '无效的二维码',
-            );
-          }
-
-          int userID = await ChimeProvider.getUserId(
-            chipId: "A63E-01E12856414",
-            timestamp: qrCode.timestamp,
-            qrCode: qrCode.qrCode,
-          ).then((value) {
-            if (value.success) {
-              return value.data;
-            } else {
-              message = "获取用户ID失败：${value.message}";
-              return -1;
-            }
-          });
-
-          if (userID == -1) {
-            return TaskResult(
-              success: false,
-              message: message,
-            );
-          }
-
-          message = await Mai2Provider.logout(userID).then((value) {
-            if (value.success) {
-              return "逃离小黑屋成功：${value.message}";
-            } else {
-              return "逃离小黑屋失败：${value.message}";
-            }
-          });
-
-          return TaskResult(
-            success: true,
-            message: message,
-          );
-        },
-        onSuccess: () {},
-      ),
-      barrierDismissible: false,
-    );
-  }
-
-  Widget _buildBody() {
-    return CustomScrollView(
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: controller.qrCodeController,
-                    decoration: const InputDecoration(
-                      labelText: '二维码',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () {
-                      logout(controller.qrCodeController.text);
-                    },
-                    child: Text('逃离小黑屋'),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +29,23 @@ class HomePage extends GetView<HomeController> {
         controller.onBackPressed(context);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Mai批复活'),
+        body: PageView(
+          controller: controller.pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: pages.map((page) => page.page).toList(),
         ),
-        body: _buildBody(),
+        bottomNavigationBar: Obx(
+          () => NavigationBar(
+            destinations: pages
+                .map((page) => NavigationDestination(
+                      icon: Icon(page.icon),
+                      label: page.title,
+                    ))
+                .toList(),
+            selectedIndex: controller.pageIndex.value,
+            onDestinationSelected: controller.onTabTapped,
+          ),
+        ),
       ),
     );
   }

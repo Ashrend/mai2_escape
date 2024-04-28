@@ -19,7 +19,6 @@ class LoadingDialogController extends GetxController with StateMixin {
   }
 
   Future<void> _runTask() async {
-    await Future.delayed(const Duration(seconds: 500));
     TaskResult result = await _task();
     if (result.success) {
       change(result.message, status: RxStatus.success());

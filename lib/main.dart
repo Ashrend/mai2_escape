@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:oktoast/oktoast.dart';
@@ -75,6 +76,13 @@ class _MainAppState extends State<MainApp> {
         initialRoute: AppRoutes.home,
         defaultTransition: Transition.native,
         getPages: AppPages.pages,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: const [
+          Locale('zh', 'CH'),
+        ],
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: lightColorScheme,

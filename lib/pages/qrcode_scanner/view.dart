@@ -87,14 +87,14 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage>
             errorBuilder: (context, error, child) {
               return ScannerErrorWidget(error: error);
             },
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
           ),
           Align(
             alignment: Alignment.center,
             child: Container(
               alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(bottom: Get.height * 0.16),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              margin: EdgeInsets.only(bottom: Get.height * 0.1),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

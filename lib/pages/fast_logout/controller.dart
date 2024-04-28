@@ -20,7 +20,7 @@ class FastLogoutController extends GetxController {
         task: () async {
           String message = "";
 
-          if (!qrCode.isValid()) {
+          if (!qrCode.valid) {
             return TaskResult(
               success: false,
               message: '无效的二维码',

@@ -74,7 +74,7 @@ class BoundUsersController extends GetxController {
 
     String message = "";
 
-    if (!qrCode.isValid()) {
+    if (!qrCode.valid) {
       message = '无效的二维码';
       return TaskResult(
         success: false,

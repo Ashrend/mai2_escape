@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../routes/pages.dart';
 import 'controller.dart';
 
 class FastLogoutPage extends GetView<FastLogoutController> {
@@ -45,13 +46,16 @@ class FastLogoutPage extends GetView<FastLogoutController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Mai批复活'),
-        ),
-        body: _buildBody(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(Icons.qr_code),
-        ));
+      appBar: AppBar(
+        title: const Text('Mai批复活'),
+      ),
+      body: _buildBody(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(AppRoutes.qrCodeScanner);
+        },
+        child: const Icon(Icons.qr_code),
+      ),
+    );
   }
 }
